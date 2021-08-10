@@ -1,0 +1,38 @@
+* {
+    box-sizing: inherit;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    position: relative;
+    box-sizing: border-box;
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif !important;
+}
+
+body {
+    position: relative;
+    display: block;
+    height: 100vh;
+    background-color: color('white');
+}
+
+button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    outline: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+li {
+    list-style: none;
+}
+
+input {
+    outline: none;
+    border: none;
+}
