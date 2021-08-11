@@ -35,7 +35,7 @@
 
     &__btn {
         padding: 40px;
-        font-size: 16px;
+        font-size: 18px;
         border: 1px solid color('black');
         border-radius: 10px;
         box-shadow: none;
@@ -61,7 +61,8 @@
     }
 
     &__submit {
-        padding: 10px 20px;
+        padding: 10px 25px;
+        font-size: 16px;
         border-radius: 10px;
         color: color('white');
         background-color: color('grey');

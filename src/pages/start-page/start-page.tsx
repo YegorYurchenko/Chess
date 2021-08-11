@@ -1,38 +1,45 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { FC, useState, useRef, useEffect, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { Colors } from '../../enums/enums';
 import Context from '../../context';
 
 interface IStartPage {
     onSetColor(color: Colors): void;
+    onSetStartGame(): void;
 }
 
-const StartPage: FC<IStartPage> = ({ onSetColor }) => {
+const StartPage: FC<IStartPage> = ({ onSetColor, onSetStartGame }) => {
     const phoneWidth = 481;
 
-    const { selectedColor } = useContext(Context);
+    const { selectedColor, startGame } = useContext(Context);
     const [colorSelected, setColorSelected] = useState<boolean>(false);
     const [isPhone, setIsPhone] = useState<boolean>(window.innerWidth < phoneWidth);
 
     const whiteBtn = useRef<HTMLButtonElement>(null);
     const blackBtn = useRef<HTMLButtonElement>(null);
+    const submitBtn = useRef<HTMLButtonElement>(null);
 
     /**
      * ComponentDidMount - вешаем слушатели событий кликов по кнопкам выбора цвета
+     * Update при изменении isPhone
+     * 
      * @return {void)
      */
     useEffect(() => {
         const whiteBtnElement: HTMLButtonElement | null = whiteBtn.current;
         const blackBtnElement: HTMLButtonElement | null = blackBtn.current;
+        const submitBtnElement: HTMLButtonElement | null = submitBtn.current;
 
         whiteBtnElement?.addEventListener("click", setWhiteColorBtn);
         blackBtnElement?.addEventListener("click", setBlackColorBtn);
+        submitBtnElement?.addEventListener("click", onSetStartGame);
         window.addEventListener("resize", windowResizeHandler);
 
         return () => {
             whiteBtnElement?.removeEventListener("click", setWhiteColorBtn);
             blackBtnElement?.removeEventListener("click", setBlackColorBtn);
+            submitBtnElement?.removeEventListener("click", onSetStartGame);
             window.removeEventListener("resize", windowResizeHandler);
         };
     }, [isPhone]);
@@ -83,8 +90,11 @@ const StartPage: FC<IStartPage> = ({ onSetColor }) => {
         submitBtnClasses.push(classes.active);
     }
 
+
     if (isPhone) {
         return <h1 className="start-page__phone-title">К сожалению, на телефоне приложение не работает</h1>;
+    } else if (startGame) {
+        return <Redirect to="/play" />;
     }
 
     return (
@@ -104,11 +114,11 @@ const StartPage: FC<IStartPage> = ({ onSetColor }) => {
                     Чёрные
                 </button>
             </div>
-            <Link
-                to="/play"
+            <button
+                ref={submitBtn}
                 className={submitBtnClasses.join(" ")}>
                 Подтвердить
-            </Link>
+            </button>
         </div>
     );
 };
