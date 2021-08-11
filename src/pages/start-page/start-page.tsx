@@ -6,7 +6,7 @@ import Context from '../../context';
 
 interface IStartPage {
     onSetColor(color: Colors): void;
-    onSetStartGame(): void;
+    onSetStartGame(startGame: boolean): void;
 }
 
 const StartPage: FC<IStartPage> = ({ onSetColor, onSetStartGame }) => {
@@ -33,13 +33,13 @@ const StartPage: FC<IStartPage> = ({ onSetColor, onSetStartGame }) => {
 
         whiteBtnElement?.addEventListener("click", setWhiteColorBtn);
         blackBtnElement?.addEventListener("click", setBlackColorBtn);
-        submitBtnElement?.addEventListener("click", onSetStartGame);
+        submitBtnElement?.addEventListener("click", SetStartGame);
         window.addEventListener("resize", windowResizeHandler);
 
         return () => {
             whiteBtnElement?.removeEventListener("click", setWhiteColorBtn);
             blackBtnElement?.removeEventListener("click", setBlackColorBtn);
-            submitBtnElement?.removeEventListener("click", onSetStartGame);
+            submitBtnElement?.removeEventListener("click", SetStartGame);
             window.removeEventListener("resize", windowResizeHandler);
         };
     }, [isPhone]);
@@ -60,6 +60,14 @@ const StartPage: FC<IStartPage> = ({ onSetColor, onSetStartGame }) => {
     const setBlackColorBtn = () => {
         onSetColor(Colors.Black);
         setColorSelected(true);
+    };
+
+    /**
+     * Начинается игра
+     * @return {void)
+     */
+    const SetStartGame = () => {
+        onSetStartGame(true);
     };
 
     /**

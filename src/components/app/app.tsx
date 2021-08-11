@@ -4,22 +4,38 @@ import StartPage from '../../pages/start-page/start-page';
 import PlayPage from '../../pages/play-page/play-page';
 import { Colors } from '../../enums/enums';
 import Context from '../../context';
+import { ChessPieces, ChessPiecesReverse} from '../../utils';
+import { IChessPieces } from '../../interfaces';
+import { useEffect } from 'react';
 
 const App = (): JSX.Element => {
-    const [startGame, setStartGame] = useState<boolean>(false);
-    const [selectedColor, setSelectedColor] = useState<Colors>(Colors.NoColor);
+    const [startGame, setStartGame] = useState<boolean>(true);
+    const [selectedColor, setSelectedColor] = useState<Colors>(Colors.White);
+    const [chessBoard, setChessBoard] = useState<IChessPieces[]>(ChessPieces);
+
+    /**
+     * Поворачиваем доску нужной стороной в зависимости от выбранного цвета фигур
+     * @return {void)
+     */
+    useEffect(() => {
+        if (selectedColor === Colors.White) {
+            setChessBoard(ChessPieces);
+        } else {
+            setChessBoard(ChessPiecesReverse);
+        }
+    }, [selectedColor]);
 
     const onSetColor = (color: Colors): void => {
         setSelectedColor(color);
     };
 
-    const onSetStartGame = (): void => {
-        setStartGame(true);
+    const onSetStartGame = (startGame: boolean): void => {
+        setStartGame(startGame);
     };
 
     return (
         <div className="app">
-            <Context.Provider value={{ selectedColor, startGame }}>
+            <Context.Provider value={{ selectedColor, startGame, chessBoard }}>
                 <Router>
                     <Switch>
                         <Route path="/"
@@ -31,7 +47,9 @@ const App = (): JSX.Element => {
                             exact />
                         <Route path="/play"
                             render={() => (
-                                <PlayPage />
+                                <PlayPage
+                                    onSetColor={onSetColor}
+                                    onSetStartGame={onSetStartGame}/>
                             )}
                             exact />
                         <Redirect to="/" />
