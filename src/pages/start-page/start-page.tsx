@@ -10,11 +10,8 @@ interface IStartPage {
 }
 
 const StartPage: FC<IStartPage> = ({ onSetColor, onSetStartGame }) => {
-    const phoneWidth = 481;
-
     const { selectedColor, startGame } = useContext(Context);
     const [colorSelected, setColorSelected] = useState<boolean>(false);
-    const [isPhone, setIsPhone] = useState<boolean>(window.innerWidth < phoneWidth);
 
     const whiteBtn = useRef<HTMLButtonElement>(null);
     const blackBtn = useRef<HTMLButtonElement>(null);
@@ -34,15 +31,13 @@ const StartPage: FC<IStartPage> = ({ onSetColor, onSetStartGame }) => {
         whiteBtnElement?.addEventListener("click", setWhiteColorBtn);
         blackBtnElement?.addEventListener("click", setBlackColorBtn);
         submitBtnElement?.addEventListener("click", SetStartGame);
-        window.addEventListener("resize", windowResizeHandler);
 
         return () => {
             whiteBtnElement?.removeEventListener("click", setWhiteColorBtn);
             blackBtnElement?.removeEventListener("click", setBlackColorBtn);
             submitBtnElement?.removeEventListener("click", SetStartGame);
-            window.removeEventListener("resize", windowResizeHandler);
         };
-    }, [isPhone]);
+    }, []);
 
     /**
      * Устанавливаем белый цвет фигур
@@ -70,18 +65,6 @@ const StartPage: FC<IStartPage> = ({ onSetColor, onSetStartGame }) => {
         onSetStartGame(true);
     };
 
-    /**
-     * Изменение ширины экрана - если это телефон, то приложение не работает
-     * @return {void)
-     */
-    const windowResizeHandler = () => {
-        if (window.innerWidth < phoneWidth) {
-            setIsPhone(true);
-        } else {
-            setIsPhone(false);
-        }
-    };
-
     // Если цвет выбран, то активна соответствующая кнопка
     const whiteBtnClasses = ["start-page__btn start-page__btn_white"];
     const blackBtnClasses = ["start-page__btn start-page__btn_black"];
@@ -99,9 +82,7 @@ const StartPage: FC<IStartPage> = ({ onSetColor, onSetStartGame }) => {
     }
 
 
-    if (isPhone) {
-        return <h1 className="start-page__phone-title">К сожалению, на телефоне приложение не работает</h1>;
-    } else if (startGame) {
+    if (startGame) {
         return <Redirect to="/play" />;
     }
 

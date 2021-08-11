@@ -1,14 +1,17 @@
-import { useState } from 'react';
+import { FC, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import StartPage from '../../pages/start-page/start-page';
 import PlayPage from '../../pages/play-page/play-page';
+import { IChessPieces } from '../../interfaces';
 import { Colors } from '../../enums/enums';
 import Context from '../../context';
 import { ChessPieces, ChessPiecesReverse} from '../../utils';
-import { IChessPieces } from '../../interfaces';
-import { useEffect } from 'react';
 
-const App = (): JSX.Element => {
+// Максимальная ширина телефона
+const phoneWidth = 481;
+
+const App:FC = () => {
+    const [isPhone, setIsPhone] = useState<boolean>(window.innerWidth < phoneWidth);
     const [startGame, setStartGame] = useState<boolean>(true);
     const [selectedColor, setSelectedColor] = useState<Colors>(Colors.White);
     const [chessBoard, setChessBoard] = useState<IChessPieces[]>(ChessPieces);
@@ -25,6 +28,26 @@ const App = (): JSX.Element => {
         }
     }, [selectedColor]);
 
+    /**
+     * ComponentDidMount - вешаем слушатель на resize окна
+     * @return {void)
+     */
+    useEffect(() => {
+        window.addEventListener("resize", windowResizeHandler);
+    }, []);
+
+    /**
+     * Изменение ширины экрана - если это телефон, то приложение не работает
+     * @return {void)
+     */
+    const windowResizeHandler = () => {
+        if (window.innerWidth < phoneWidth) {
+            setIsPhone(true);
+        } else {
+            setIsPhone(false);
+        }
+    };
+
     const onSetColor = (color: Colors): void => {
         setSelectedColor(color);
     };
@@ -32,6 +55,15 @@ const App = (): JSX.Element => {
     const onSetStartGame = (startGame: boolean): void => {
         setStartGame(startGame);
     };
+
+    
+    if (isPhone) {
+        return (
+            <div className="app">
+                <h1 className="app__phone-title">К сожалению, на телефоне приложение не работает</h1>
+            </div>
+        );
+    }
 
     return (
         <div className="app">

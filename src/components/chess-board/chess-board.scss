@@ -1,6 +1,4 @@
 .chess-board {
-    
-
     &__list {
         display: flex;
         flex-direction: column-reverse;
@@ -9,6 +7,16 @@
         flex-wrap: wrap;
         width: 800px;
         height: 800px;
+
+        @media (max-width: grid('lg')) {
+            width: 700px;
+            height: 700px;
+        }
+
+        @media (max-width: grid('md')) {
+            width: 475px;
+            height: 475px;
+        }
     }
 
     &__item {
