@@ -1,0 +1,30 @@
+.exit-game {
+    position: absolute;
+    top: 20px;
+    right: 100px;
+    
+    @media (max-width: grid('xl')) {
+        top: 10px;
+    }
+    
+    @media (max-width: grid('lg')) {
+        top: 35px;
+    }
+    
+    @media (max-width: grid('md')) {
+        right: 40px;
+    }
+
+    &__btn {
+        padding: 10px 20px;
+        font-size: 18px;
+        border-radius: 10px;
+        color: color('white');
+        background-color: color('red');
+        transition: background-color 0.2s ease-in-out;
+        
+        &:hover {
+            background-color: color('red-darker');
+        }
+    }
+}

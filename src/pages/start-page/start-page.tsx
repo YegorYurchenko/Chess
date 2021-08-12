@@ -6,15 +6,12 @@ import Context from '../../context';
 
 interface IStartPage {
     onSetColor(color: Colors): void;
-    onSetStartGame(): void;
+    onSetStartGame(startGame: boolean): void;
 }
 
 const StartPage: FC<IStartPage> = ({ onSetColor, onSetStartGame }) => {
-    const phoneWidth = 481;
-
     const { selectedColor, startGame } = useContext(Context);
     const [colorSelected, setColorSelected] = useState<boolean>(false);
-    const [isPhone, setIsPhone] = useState<boolean>(window.innerWidth < phoneWidth);
 
     const whiteBtn = useRef<HTMLButtonElement>(null);
     const blackBtn = useRef<HTMLButtonElement>(null);
@@ -24,7 +21,7 @@ const StartPage: FC<IStartPage> = ({ onSetColor, onSetStartGame }) => {
      * ComponentDidMount - вешаем слушатели событий кликов по кнопкам выбора цвета
      * Update при изменении isPhone
      * 
-     * @return {void)
+     * @return {void}
      */
     useEffect(() => {
         const whiteBtnElement: HTMLButtonElement | null = whiteBtn.current;
@@ -33,20 +30,18 @@ const StartPage: FC<IStartPage> = ({ onSetColor, onSetStartGame }) => {
 
         whiteBtnElement?.addEventListener("click", setWhiteColorBtn);
         blackBtnElement?.addEventListener("click", setBlackColorBtn);
-        submitBtnElement?.addEventListener("click", onSetStartGame);
-        window.addEventListener("resize", windowResizeHandler);
+        submitBtnElement?.addEventListener("click", SetStartGame);
 
         return () => {
             whiteBtnElement?.removeEventListener("click", setWhiteColorBtn);
             blackBtnElement?.removeEventListener("click", setBlackColorBtn);
-            submitBtnElement?.removeEventListener("click", onSetStartGame);
-            window.removeEventListener("resize", windowResizeHandler);
+            submitBtnElement?.removeEventListener("click", SetStartGame);
         };
-    }, [isPhone]);
+    }, []);
 
     /**
      * Устанавливаем белый цвет фигур
-     * @return {void)
+     * @return {void}
      */
     const setWhiteColorBtn = () => {
         onSetColor(Colors.White);
@@ -55,7 +50,7 @@ const StartPage: FC<IStartPage> = ({ onSetColor, onSetStartGame }) => {
 
     /**
      * Устанавливаем чёрный цвет фигур
-     * @return {void)
+     * @return {void}
      */
     const setBlackColorBtn = () => {
         onSetColor(Colors.Black);
@@ -63,15 +58,11 @@ const StartPage: FC<IStartPage> = ({ onSetColor, onSetStartGame }) => {
     };
 
     /**
-     * Изменение ширины экрана - если это телефон, то приложение не работает
-     * @return {void)
+     * Начинается игра
+     * @return {void}
      */
-    const windowResizeHandler = () => {
-        if (window.innerWidth < phoneWidth) {
-            setIsPhone(true);
-        } else {
-            setIsPhone(false);
-        }
+    const SetStartGame = () => {
+        onSetStartGame(true);
     };
 
     // Если цвет выбран, то активна соответствующая кнопка
@@ -91,9 +82,7 @@ const StartPage: FC<IStartPage> = ({ onSetColor, onSetStartGame }) => {
     }
 
 
-    if (isPhone) {
-        return <h1 className="start-page__phone-title">К сожалению, на телефоне приложение не работает</h1>;
-    } else if (startGame) {
+    if (startGame) {
         return <Redirect to="/play" />;
     }
 
