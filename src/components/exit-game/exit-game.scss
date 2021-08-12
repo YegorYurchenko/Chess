@@ -1,10 +1,18 @@
 .exit-game {
     position: absolute;
-    top: 10px;
+    top: 20px;
     right: 100px;
-
+    
+    @media (max-width: grid('xl')) {
+        top: 10px;
+    }
+    
     @media (max-width: grid('lg')) {
         top: 35px;
+    }
+    
+    @media (max-width: grid('md')) {
+        right: 40px;
     }
 
     &__btn {

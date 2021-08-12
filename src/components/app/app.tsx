@@ -5,7 +5,7 @@ import PlayPage from '../../pages/play-page/play-page';
 import { IChessPieces } from '../../interfaces';
 import { Colors } from '../../enums/enums';
 import Context from '../../context';
-import { ChessPieces, ChessPiecesReverse} from '../../utils';
+import { resultChessPieces, resultChessPiecesReverse} from '../../utils/getChessBoard';
 
 // Максимальная ширина телефона
 const phoneWidth = 481;
@@ -14,23 +14,23 @@ const App:FC = () => {
     const [isPhone, setIsPhone] = useState<boolean>(window.innerWidth < phoneWidth);
     const [startGame, setStartGame] = useState<boolean>(true);
     const [selectedColor, setSelectedColor] = useState<Colors>(Colors.White);
-    const [chessBoard, setChessBoard] = useState<IChessPieces[]>(ChessPieces);
+    const [chessBoard, setChessBoard] = useState<IChessPieces[][]>(resultChessPieces);
 
     /**
      * Поворачиваем доску нужной стороной в зависимости от выбранного цвета фигур
-     * @return {void)
+     * @return {void}
      */
     useEffect(() => {
         if (selectedColor === Colors.White) {
-            setChessBoard(ChessPieces);
+            setChessBoard(resultChessPieces);
         } else {
-            setChessBoard(ChessPiecesReverse);
+            setChessBoard(resultChessPiecesReverse);
         }
     }, [selectedColor]);
 
     /**
      * ComponentDidMount - вешаем слушатель на resize окна
-     * @return {void)
+     * @return {void}
      */
     useEffect(() => {
         window.addEventListener("resize", windowResizeHandler);
@@ -38,7 +38,7 @@ const App:FC = () => {
 
     /**
      * Изменение ширины экрана - если это телефон, то приложение не работает
-     * @return {void)
+     * @return {void}
      */
     const windowResizeHandler = () => {
         if (window.innerWidth < phoneWidth) {
@@ -56,7 +56,7 @@ const App:FC = () => {
         setStartGame(startGame);
     };
 
-    
+
     if (isPhone) {
         return (
             <div className="app">

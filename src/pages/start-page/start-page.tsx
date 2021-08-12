@@ -21,7 +21,7 @@ const StartPage: FC<IStartPage> = ({ onSetColor, onSetStartGame }) => {
      * ComponentDidMount - вешаем слушатели событий кликов по кнопкам выбора цвета
      * Update при изменении isPhone
      * 
-     * @return {void)
+     * @return {void}
      */
     useEffect(() => {
         const whiteBtnElement: HTMLButtonElement | null = whiteBtn.current;
@@ -41,7 +41,7 @@ const StartPage: FC<IStartPage> = ({ onSetColor, onSetStartGame }) => {
 
     /**
      * Устанавливаем белый цвет фигур
-     * @return {void)
+     * @return {void}
      */
     const setWhiteColorBtn = () => {
         onSetColor(Colors.White);
@@ -50,7 +50,7 @@ const StartPage: FC<IStartPage> = ({ onSetColor, onSetStartGame }) => {
 
     /**
      * Устанавливаем чёрный цвет фигур
-     * @return {void)
+     * @return {void}
      */
     const setBlackColorBtn = () => {
         onSetColor(Colors.Black);
@@ -59,7 +59,7 @@ const StartPage: FC<IStartPage> = ({ onSetColor, onSetStartGame }) => {
 
     /**
      * Начинается игра
-     * @return {void)
+     * @return {void}
      */
     const SetStartGame = () => {
         onSetStartGame(true);

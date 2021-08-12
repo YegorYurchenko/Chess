@@ -61,14 +61,14 @@
         background-color: color('grey');
         pointer-events: none;
         transition: background-color 0.2s ease-in-out;
-
-        &:hover {
-            background-color: color('green-darker');
-        }
-
+        
         &.active {
             pointer-events: all;
             background-color: color('green');
+        }
+
+        &:hover {
+            background-color: color('green-darker');
         }
     }
 }
