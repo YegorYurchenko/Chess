@@ -11,10 +11,11 @@ import { resultChessPieces, resultChessPiecesReverse} from '../../utils/getChess
 const phoneWidth = 481;
 
 const App:FC = () => {
-    const [isPhone, setIsPhone] = useState<boolean>(window.innerWidth < phoneWidth);
-    const [startGame, setStartGame] = useState<boolean>(true);
-    const [selectedColor, setSelectedColor] = useState<Colors>(Colors.White);
-    const [chessBoard, setChessBoard] = useState<IChessPieces[][]>(resultChessPieces);
+    const [isPhone, setIsPhone] = useState<boolean>(window.innerWidth < phoneWidth); // Приложение открыто с телефона?
+    const [startGame, setStartGame] = useState<boolean>(true); // Игра активна или нет?
+    const [selectedColor, setSelectedColor] = useState<Colors>(Colors.White); // Выбранный цвет фигур
+    const [chessBoard, setChessBoard] = useState<IChessPieces[][]>(resultChessPieces); // Доска с фигурами
+    const [activeColor, setActiveColor] = useState<Colors>(Colors.White); // Цвет фигуры, которая должна сделать ход
 
     /**
      * Поворачиваем доску нужной стороной в зависимости от выбранного цвета фигур
@@ -50,6 +51,7 @@ const App:FC = () => {
 
     const onSetColor = (color: Colors): void => {
         setSelectedColor(color);
+        setActiveColor(color);
     };
 
     const onSetStartGame = (startGame: boolean): void => {
@@ -67,7 +69,7 @@ const App:FC = () => {
 
     return (
         <div className="app">
-            <Context.Provider value={{ selectedColor, startGame, chessBoard }}>
+            <Context.Provider value={{ selectedColor, startGame, chessBoard, activeColor }}>
                 <Router>
                     <Switch>
                         <Route path="/"

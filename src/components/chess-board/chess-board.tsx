@@ -1,9 +1,47 @@
-import { FC, useContext } from "react";
+import { FC, useState, useContext, useEffect, useRef } from "react";
 import Context from '../../context';
-import { Colors } from '../../enums/enums';
+import { Colors, ChessBoardPositions } from '../../enums/enums';
+
+type SelectedPiecePosition = keyof typeof ChessBoardPositions;
 
 const ChessBoard: FC = () => {
-    const { selectedColor, chessBoard } = useContext(Context);
+    const [currentSelectedPiecePosition, setCurrentSelectedPiecePosition] = useState<SelectedPiecePosition>("No");
+    const { selectedColor, chessBoard, activeColor } = useContext(Context);
+
+    const chessPieceList = useRef<HTMLUListElement>(null);
+
+    useEffect(() => {
+        const chessPieceListElement = chessPieceList.current;
+        chessPieceListElement?.addEventListener("click", onChessPieceListClick);
+
+        return () => {
+            chessPieceListElement?.removeEventListener("click", onChessPieceListClick);
+        };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentSelectedPiecePosition]);
+
+    const onChessPieceListClick = (e: Event) => {
+        const selectedChessItem = e.target as Element;
+        let selectedChessPiece;
+
+        if (selectedChessItem.classList.contains("js-chess-piece")) {
+            selectedChessPiece = selectedChessItem;
+        } else {
+            return;
+        }
+
+        const selectedChessPieceColor = selectedChessPiece.id.toLowerCase();
+
+        if (selectedChessPieceColor.search(activeColor) >= 0) {
+            const selectedChessPiecePosition: SelectedPiecePosition = selectedChessPiece.getAttribute('data-position') as SelectedPiecePosition;
+
+            if (selectedChessPiecePosition !== currentSelectedPiecePosition) {
+                setCurrentSelectedPiecePosition(selectedChessPiecePosition);
+            } else {
+                setCurrentSelectedPiecePosition("No");
+            }
+        }
+    };
 
     const chessBoardClasses = ["chess-board__list"];
     const chessBoardColumnClasses = ["chess-board__column"];
@@ -18,13 +56,26 @@ const ChessBoard: FC = () => {
 
     return (
         <div className="chess-board">
-            <ul className={chessBoardClasses.join(" ")}>
+            <ul className={chessBoardClasses.join(" ")} ref={chessPieceList}>
                 {chessBoard.map(row => {
-                    return row.map(position => (
-                        <li key={position.chessPosition} className="chess-board__item">
-                            {position.chessPiece && <img src={`/images/${position.chessPiece}.png`} alt={position.chessPiece} className="chess-board__item-piece-img" />}
-                        </li>
-                    ));
+                    return row.map(position => {
+                        const chessBoardItemClass = ["chess-board__item"];
+                        if (currentSelectedPiecePosition === position.chessPosition) chessBoardItemClass.push("active");
+
+                        return (
+                            <li key={position.chessPosition} id={position.chessPosition} className={chessBoardItemClass.join(" ")}>
+                                {
+                                    position.chessPiece
+                                    &&
+                                    <img src={`/images/${position.chessPiece}.png`}
+                                        alt={position.chessPiece}
+                                        id={position.chessPiece}
+                                        data-position={position.chessPosition}
+                                        className="chess-board__item-piece-img js-chess-piece" />
+                                }
+                            </li>
+                        );
+                    });
                 })}
             </ul>
             <span className={chessBoardColumnClasses.join(" ")}>
@@ -39,6 +90,7 @@ const ChessBoard: FC = () => {
 
 // Классы для CSS
 const classes = {
+    active: "active",
     reverse: "reverse"
 };
 

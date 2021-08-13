@@ -7,12 +7,14 @@ interface IContext {
     selectedColor: Colors;
     startGame: boolean;
     chessBoard: IChessPieces[][];
+    activeColor: Colors;
 }
 
 const Context = React.createContext<IContext>({
     selectedColor: Colors.NoColor,
     startGame: false,
-    chessBoard: resultChessPieces
+    chessBoard: resultChessPieces,
+    activeColor: Colors.NoColor
 });
 
 export default Context;
