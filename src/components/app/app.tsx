@@ -2,10 +2,12 @@ import { FC, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import StartPage from '../../pages/start-page/start-page';
 import PlayPage from '../../pages/play-page/play-page';
+import { SelectedPiece, SelectedPiecePosition } from '../../types';
 import { IChessPieces } from '../../interfaces';
-import { Colors } from '../../enums/enums';
+import { Colors } from '../../enums';
 import Context from '../../context';
-import { resultChessPieces, resultChessPiecesReverse} from '../../utils/getChessBoard';
+import { resultChessPieces, resultChessPiecesReverse } from '../../utils/getChessBoard';
+import { movePieceToEmptySpace } from '../../utils/moveChessPiece';
 
 // Максимальная ширина телефона
 const phoneWidth = 481;
@@ -49,15 +51,53 @@ const App:FC = () => {
         }
     };
 
+    /**
+     * Выбор цвета фигур
+     * @param {Colors} color - выбранный цвет фигур
+     * @return {void}
+     */
     const onSetColor = (color: Colors): void => {
         setSelectedColor(color);
         setActiveColor(color);
     };
 
+    /**
+     * Начало/завершение игры
+     * @param {boolean} startGame - игра в процессе?
+     * @return {void}
+     */
     const onSetStartGame = (startGame: boolean): void => {
         setStartGame(startGame);
     };
 
+    /**
+     * Делаем ход на свободное поле и обновляем состояние доски
+     * @param {SelectedPiecePosition} currentPiecePosition - позиция выбранной фигуры
+     * @param {SelectedPiecePosition} moveToEmptySpacePosition - позиция, куда нужно переставить фигуру (пустое место на доске)
+     * @param {SelectedPiece} chessPiece - выбранная фигура
+     * @param {IChessPieces[][]} chessBoard - текущее отображение шахматной доски
+     * @return {IChessPieces[][]} - новое отображение шахматной доски
+     */
+    const movePiece = (
+        currentPiecePosition: SelectedPiecePosition,
+        moveToEmptySpacePosition: SelectedPiecePosition,
+        chessPiece: SelectedPiece,
+        chessBoard: IChessPieces[][]
+    ): IChessPieces[][] => {
+        // Переключаем цвет для передачи хода сопернику
+        if (activeColor === Colors.White) {
+            setActiveColor(Colors.Black);
+        } else {
+            setActiveColor(Colors.White);
+        }
+
+        return movePieceToEmptySpace(
+            currentPiecePosition,
+            moveToEmptySpacePosition,
+            chessPiece,
+            chessBoard
+        );
+    };
 
     if (isPhone) {
         return (
@@ -69,7 +109,7 @@ const App:FC = () => {
 
     return (
         <div className="app">
-            <Context.Provider value={{ selectedColor, startGame, chessBoard, activeColor }}>
+            <Context.Provider value={{ selectedColor, startGame, chessBoard, activeColor, movePiece }}>
                 <Router>
                     <Switch>
                         <Route path="/"

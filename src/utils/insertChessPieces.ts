@@ -1,4 +1,4 @@
-import { ChessBoardPieces } from '../enums/enums';
+import { ChessBoardPieces } from '../enums';
 import { IChessPieces } from '../interfaces';
 
 /**

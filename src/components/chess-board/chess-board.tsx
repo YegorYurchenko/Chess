@@ -1,12 +1,12 @@
 import { FC, useState, useContext, useEffect, useRef } from "react";
+import { SelectedPiece, SelectedPiecePosition } from '../../types';
 import Context from '../../context';
-import { Colors, ChessBoardPositions } from '../../enums/enums';
-
-type SelectedPiecePosition = keyof typeof ChessBoardPositions;
+import { Colors } from '../../enums';
 
 const ChessBoard: FC = () => {
-    const [currentSelectedPiecePosition, setCurrentSelectedPiecePosition] = useState<SelectedPiecePosition>("No");
-    const { selectedColor, chessBoard, activeColor } = useContext(Context);
+    const [currentSelectedPiece, setCurrentSelectedPiece] = useState<SelectedPiece>("NoOne"); // Текущая выбранная фигура
+    const [currentSelectedPiecePosition, setCurrentSelectedPiecePosition] = useState<SelectedPiecePosition>("No"); // Текущая выбранная позиция на доске
+    const { selectedColor, chessBoard, activeColor, movePiece } = useContext(Context);
 
     const chessPieceList = useRef<HTMLUListElement>(null);
 
@@ -18,30 +18,64 @@ const ChessBoard: FC = () => {
             chessPieceListElement?.removeEventListener("click", onChessPieceListClick);
         };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentSelectedPiecePosition]);
+    }, [currentSelectedPiece]);
 
+    /**
+     * Обрабатываем каждое нажатие на шахматную доску
+     * @param {Event} e - событие клика мыши
+     * @return {void}
+     */
     const onChessPieceListClick = (e: Event) => {
         const selectedChessItem = e.target as Element;
-        let selectedChessPiece;
 
+        // Если это фигура - то делаем её активной, иначе - делаем ход
         if (selectedChessItem.classList.contains("js-chess-piece")) {
-            selectedChessPiece = selectedChessItem;
+            selectNewPiece(selectedChessItem as HTMLImageElement);
         } else {
-            return;
+            moveToEmptySpace(selectedChessItem as HTMLLIElement);
         }
+    };
 
+    /**
+     * Запоминаем выбранное поле с фигурой активного цвета
+     * @param {HTMLImageElement} selectedChessPiece - фигура, которую выбрал пользователь
+     * @return {void}
+     */
+    const selectNewPiece = (selectedChessPiece: HTMLImageElement) => {
         const selectedChessPieceColor = selectedChessPiece.id.toLowerCase();
 
         if (selectedChessPieceColor.search(activeColor) >= 0) {
+            const selectedChessPieceName: SelectedPiece = selectedChessPiece.id as SelectedPiece;
             const selectedChessPiecePosition: SelectedPiecePosition = selectedChessPiece.getAttribute('data-position') as SelectedPiecePosition;
 
+            // Если это поле уже выбрано, то сбросим выделение, иначе - выбираем поле
             if (selectedChessPiecePosition !== currentSelectedPiecePosition) {
                 setCurrentSelectedPiecePosition(selectedChessPiecePosition);
+                setCurrentSelectedPiece(selectedChessPieceName);
             } else {
                 setCurrentSelectedPiecePosition("No");
+                setCurrentSelectedPiece("NoOne");
             }
         }
     };
+
+    /**
+     * Делаем ход на пустое поле
+     * @return {void}
+     */
+    const moveToEmptySpace = (selectedEmptySpace: HTMLLIElement) => {
+        if (currentSelectedPiecePosition.toLowerCase() !== "no") {
+            const selectedEmptySpacePosition: SelectedPiecePosition = selectedEmptySpace.id as SelectedPiecePosition;
+
+            // Делаем ход
+            movePiece(currentSelectedPiecePosition, selectedEmptySpacePosition, currentSelectedPiece, chessBoard);
+
+            // Обнуляем выбранную фигуру
+            setCurrentSelectedPiecePosition("No");
+            setCurrentSelectedPiece("NoOne");
+        }
+    };
+    
 
     const chessBoardClasses = ["chess-board__list"];
     const chessBoardColumnClasses = ["chess-board__column"];
