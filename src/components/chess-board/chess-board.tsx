@@ -2,10 +2,12 @@ import { FC, useState, useContext, useEffect, useRef } from "react";
 import { SelectedPiece, SelectedPiecePosition } from '../../types';
 import Context from '../../context';
 import { Colors } from '../../enums';
+import { Pawn } from '../../chessPiece';
 
 const ChessBoard: FC = () => {
     const [currentSelectedPiece, setCurrentSelectedPiece] = useState<SelectedPiece>("NoOne"); // Текущая выбранная фигура
     const [currentSelectedPiecePosition, setCurrentSelectedPiecePosition] = useState<SelectedPiecePosition>("No"); // Текущая выбранная позиция на доске
+    const [availableSpaces, setAvailableSpaces] = useState<SelectedPiecePosition[]>([]); // Список доступных ходов для выбранной фигуры
     const { selectedColor, chessBoard, activeColor, movePiece } = useContext(Context);
 
     const chessPieceList = useRef<HTMLUListElement>(null);
@@ -18,7 +20,7 @@ const ChessBoard: FC = () => {
             chessPieceListElement?.removeEventListener("click", onChessPieceListClick);
         };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentSelectedPiece]);
+    }, [currentSelectedPiece, availableSpaces]);
 
     /**
      * Обрабатываем каждое нажатие на шахматную доску
@@ -32,7 +34,10 @@ const ChessBoard: FC = () => {
         if (selectedChessItem.classList.contains("js-chess-piece")) {
             selectNewPiece(selectedChessItem as HTMLImageElement);
         } else {
-            moveToEmptySpace(selectedChessItem as HTMLLIElement);
+            // Если выбранная позиция входит в список доступных ходов
+            if (availableSpaces.includes(selectedChessItem.id as SelectedPiecePosition)) {
+                moveToEmptySpace(selectedChessItem as HTMLLIElement);
+            }
         }
     };
 
@@ -48,13 +53,15 @@ const ChessBoard: FC = () => {
             const selectedChessPieceName: SelectedPiece = selectedChessPiece.id as SelectedPiece;
             const selectedChessPiecePosition: SelectedPiecePosition = selectedChessPiece.getAttribute('data-position') as SelectedPiecePosition;
 
-            // Если это поле уже выбрано, то сбросим выделение, иначе - выбираем поле
+            // Выбираем поле, фигуру и создаём список доступных ходов, НО если поле уже выбрано - сбросим выделения и очистим список
             if (selectedChessPiecePosition !== currentSelectedPiecePosition) {
                 setCurrentSelectedPiecePosition(selectedChessPiecePosition);
                 setCurrentSelectedPiece(selectedChessPieceName);
+                setAvailableSpaces(getAvailableSpace(selectedChessPieceName, selectedChessPiecePosition));
             } else {
                 setCurrentSelectedPiecePosition("No");
                 setCurrentSelectedPiece("NoOne");
+                setAvailableSpaces([]);
             }
         }
     };
@@ -73,9 +80,42 @@ const ChessBoard: FC = () => {
             // Обнуляем выбранную фигуру
             setCurrentSelectedPiecePosition("No");
             setCurrentSelectedPiece("NoOne");
+
+            // Обнуляем выделенные возможные варианты хода
+            setAvailableSpaces([]);
         }
     };
     
+    /**
+     * Получаем возможные ходы для выбранной фигуры
+     * @param {SelectedPiece} selectedChessPieceName - название фигуры
+     * @param {SelectedPiecePosition} selectedChessPiecePosition - положение фигуры
+     * @return {SelectedPiecePosition[]} resultAvailableSpaces - список возможных ходов
+     */
+    const getAvailableSpace = (
+        selectedChessPieceName: SelectedPiece,
+        selectedChessPiecePosition: SelectedPiecePosition
+    ): SelectedPiecePosition[] => {
+        const chessPieceName = selectedChessPieceName
+            .toLowerCase()
+            .replace(/white/gi, "")
+            .replace(/black/gi, "");
+
+        let resultAvailableSpaces: SelectedPiecePosition[] = [];
+
+        switch (chessPieceName) {
+            case "pawn":
+                resultAvailableSpaces = Pawn.getAvailableSpace(
+                    selectedChessPiecePosition,
+                    activeColor === selectedColor ? false : true,
+                    chessBoard
+                );
+                break;
+        }
+
+        return resultAvailableSpaces;
+    };
+
 
     const chessBoardClasses = ["chess-board__list"];
     const chessBoardColumnClasses = ["chess-board__column"];
@@ -106,6 +146,11 @@ const ChessBoard: FC = () => {
                                         id={position.chessPiece}
                                         data-position={position.chessPosition}
                                         className="chess-board__item-piece-img js-chess-piece" />
+                                }
+                                {
+                                    availableSpaces.includes(position.chessPosition as SelectedPiecePosition)
+                                    &&
+                                    <span className="chess-board__item-possible"></span>
                                 }
                             </li>
                         );
