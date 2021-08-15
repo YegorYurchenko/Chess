@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { FC, useState, useRef, useEffect, useContext } from 'react';
 import { Redirect } from 'react-router-dom';
-import { Colors } from '../../enums/enums';
+import { Colors } from '../../enums';
 import Context from '../../context';
 
 interface IStartPage {

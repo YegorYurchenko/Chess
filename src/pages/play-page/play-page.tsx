@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 import Context from '../../context';
 import ExitGame from '../../components/exit-game';
 import ChessBoard from '../../components/chess-board';
-import { Colors } from '../../enums/enums';
+import { Colors } from '../../enums';
 
 interface IPlayPage {
     onSetColor(color: Colors): void;

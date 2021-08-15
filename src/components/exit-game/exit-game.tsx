@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Colors } from '../../enums/enums';
+import { Colors } from '../../enums';
 
 interface IExitGame {
     onSetColor(color: Colors): void;
