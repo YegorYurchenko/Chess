@@ -1,0 +1,23 @@
+.sound {
+    position: absolute;
+    top: 20px;
+    left: 100px;
+
+    @media (max-width: grid('xl')) {
+        top: 10px;
+    }
+    
+    @media (max-width: grid('lg')) {
+        top: 25px;
+    }
+    
+    @media (max-width: grid('md')) {
+        left: 40px;
+    }
+
+    &__img {
+        width: 60px;
+        height: 60px;
+        pointer-events: none;
+    }
+}

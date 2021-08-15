@@ -9,7 +9,7 @@ const ChessBoard: FC = () => {
     const [currentSelectedPiece, setCurrentSelectedPiece] = useState<SelectedPiece>("NoOne"); // Текущая выбранная фигура
     const [currentSelectedPiecePosition, setCurrentSelectedPiecePosition] = useState<SelectedPiecePosition>("No"); // Текущая выбранная позиция на доске
     const [availableSpaces, setAvailableSpaces] = useState<SelectedPiecePosition[]>([]); // Список доступных ходов для выбранной фигуры
-    const { selectedColor, chessBoard, activeColor, movePiece } = useContext(Context);
+    const { selectedColor, sound, chessBoard, activeColor, movePiece } = useContext(Context);
 
     const chessPieceList = useRef<HTMLUListElement>(null);
 
@@ -87,7 +87,9 @@ const ChessBoard: FC = () => {
             movePiece(currentSelectedPiecePosition, selectedEmptySpacePosition, currentSelectedPiece, chessBoard);
             
             // Звук хода
-            chessMoveSound();
+            if (sound) {
+                chessMoveSound();
+            }
 
             // Обнуляем выбранную фигуру
             setCurrentSelectedPiecePosition("No");

@@ -7,6 +7,7 @@ import { resultChessPieces } from './utils/getChessBoard';
 
 interface IContext {
     selectedColor: Colors;
+    sound: boolean,
     startGame: boolean;
     chessBoard: IChessPieces[][];
     activeColor: Colors;
@@ -20,6 +21,7 @@ interface IContext {
 
 const Context = React.createContext<IContext>({
     selectedColor: Colors.NoColor,
+    sound: true,
     startGame: false,
     chessBoard: resultChessPieces,
     activeColor: Colors.NoColor,
