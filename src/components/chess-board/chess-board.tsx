@@ -2,7 +2,7 @@ import { FC, useState, useContext, useEffect, useRef } from "react";
 import { SelectedPiece, SelectedPiecePosition } from '../../types';
 import Context from '../../context';
 import { Colors } from '../../enums';
-import { Pawn } from '../../chessPiece';
+import { Pawn, Knight, Bishop, Rook, Queen, King } from '../../chessPiece';
 
 const ChessBoard: FC = () => {
     const [currentSelectedPiece, setCurrentSelectedPiece] = useState<SelectedPiece>("NoOne"); // Текущая выбранная фигура
@@ -108,6 +108,36 @@ const ChessBoard: FC = () => {
                 resultAvailableSpaces = Pawn.getAvailableSpace(
                     selectedChessPiecePosition,
                     activeColor === selectedColor ? false : true,
+                    chessBoard
+                );
+                break;
+            case "knight":
+                resultAvailableSpaces = Knight.getAvailableSpace(
+                    selectedChessPiecePosition,
+                    chessBoard
+                );
+                break;
+            case "bishop":
+                resultAvailableSpaces = Bishop.getAvailableSpace(
+                    selectedChessPiecePosition,
+                    chessBoard
+                );
+                break;
+            case "rook":
+                resultAvailableSpaces = Rook.getAvailableSpace(
+                    selectedChessPiecePosition,
+                    chessBoard
+                );
+                break;
+            case "queen":
+                resultAvailableSpaces = Queen.getAvailableSpace(
+                    selectedChessPiecePosition,
+                    chessBoard
+                );
+                break;
+            case "king":
+                resultAvailableSpaces = King.getAvailableSpace(
+                    selectedChessPiecePosition,
                     chessBoard
                 );
                 break;
