@@ -14,10 +14,11 @@ const phoneWidth = 481;
 
 const App:FC = () => {
     const [isPhone, setIsPhone] = useState<boolean>(window.innerWidth < phoneWidth); // Приложение открыто с телефона?
-    const [startGame, setStartGame] = useState<boolean>(true); // Игра активна или нет?
-    const [selectedColor, setSelectedColor] = useState<Colors>(Colors.White); // Выбранный цвет фигур
+    const [startGame, setStartGame] = useState<boolean>(false); // Игра активна или нет?
+    const [sound, setSound] = useState<boolean>(true); // Включен звук ходов?
+    const [selectedColor, setSelectedColor] = useState<Colors>(Colors.NoColor); // Выбранный цвет фигур
     const [chessBoard, setChessBoard] = useState<IChessPieces[][]>(resultChessPieces); // Доска с фигурами
-    const [activeColor, setActiveColor] = useState<Colors>(Colors.White); // Цвет фигуры, которая должна сделать ход
+    const [activeColor, setActiveColor] = useState<Colors>(Colors.NoColor); // Цвет фигуры, которая должна сделать ход
 
     /**
      * Поворачиваем доску нужной стороной в зависимости от выбранного цвета фигур
@@ -71,6 +72,15 @@ const App:FC = () => {
     };
 
     /**
+     * Включить/отключить звуки ходов фигур
+     * @param {boolean} sound - включить звук?
+     * @return {void}
+     */
+    const onSetSound = (sound: boolean): void => {
+        setSound(sound);
+    };
+
+    /**
      * Делаем ход на свободное поле и обновляем состояние доски
      * @param {SelectedPiecePosition} currentPiecePosition - позиция выбранной фигуры
      * @param {SelectedPiecePosition} moveToEmptySpacePosition - позиция, куда нужно переставить фигуру (пустое место на доске)
@@ -109,7 +119,7 @@ const App:FC = () => {
 
     return (
         <div className="app">
-            <Context.Provider value={{ selectedColor, startGame, chessBoard, activeColor, movePiece }}>
+            <Context.Provider value={{ selectedColor, sound, startGame, chessBoard, activeColor, movePiece }}>
                 <Router>
                     <Switch>
                         <Route path="/"
@@ -122,6 +132,7 @@ const App:FC = () => {
                         <Route path="/play"
                             render={() => (
                                 <PlayPage
+                                    onSetSound={onSetSound}
                                     onSetColor={onSetColor}
                                     onSetStartGame={onSetStartGame}/>
                             )}
