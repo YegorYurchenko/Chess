@@ -1,16 +1,13 @@
 import { FC } from "react";
-import { Colors } from '../../enums';
 
 interface IExitGame {
-    onSetColor(color: Colors): void;
-    onSetStartGame(startGame: boolean): void;
+    onExitGame(): void;
 }
 
-const ExitGame: FC<IExitGame> = ({ onSetColor, onSetStartGame }) => {
-    const onExitGame = () => {
+const ExitGame: FC<IExitGame> = ({ onExitGame }) => {
+    const onExitGameHandler = () => {
         if (confirm("Вы уверены, что хотите выйти из игры?")) {
-            onSetStartGame(false);
-            onSetColor(Colors.NoColor);
+            onExitGame();
         }
     };
 
@@ -18,7 +15,7 @@ const ExitGame: FC<IExitGame> = ({ onSetColor, onSetStartGame }) => {
         <span className="exit-game">
             <button
                 className="exit-game__btn"
-                onClick={onExitGame}>
+                onClick={onExitGameHandler}>
                 Выйти из игры
             </button>
         </span>

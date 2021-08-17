@@ -1,29 +1,39 @@
 import { IChessPieces } from '../interfaces';
 import insertChessPieces from './insertChessPieces';
 
-// Массив из 8 элементов (количество горизонтальных позиций на шахматной доске)
-const rowChessPositions: string[] = ["A", "B", "C", "D", "E", "F", "G", "H"];
+/**
+ * Получаем шахматную доску с начальным расположением фигур
+ * @param {boolean} reverse - повернуть доску? (если первые ходят чёрные фигуры)
+ * @return {IChessPieces[][} resultChessBoard
+ */
+const getResultChessBoard = (reverse = false): IChessPieces[][] => {
+    // Массив из 8 элементов (количество горизонтальных позиций на шахматной доске)
+    const rowChessPositions: string[] = ["A", "B", "C", "D", "E", "F", "G", "H"];
 
-// Начальная позиция фигур на шахматной доске
-const chessPieces: IChessPieces[][] = [];
+    // Начальная позиция фигур на шахматной доске
+    const chessPieces: IChessPieces[][] = [];
 
-for (let i = 1; i < 9; i++) {
-    const temporaryChessPieces: IChessPieces[] = [];
-    for (let j = 0; j < 8; j++) {
-        const chessPiecePosition = {
-            chessPosition: `${rowChessPositions[j]}${i}`,
-            chessPiece: ""
-        };
+    for (let i = 1; i < 9; i++) {
+        const temporaryChessPieces: IChessPieces[] = [];
+        for (let j = 0; j < 8; j++) {
+            const chessPiecePosition = {
+                chessPosition: `${rowChessPositions[j]}${i}`,
+                chessPiece: ""
+            };
 
-        temporaryChessPieces.push(chessPiecePosition);
+            temporaryChessPieces.push(chessPiecePosition);
+        }
+
+        chessPieces.push(temporaryChessPieces);
     }
 
-    chessPieces.push(temporaryChessPieces);
-}
+    let resultChessBoard = insertChessPieces(JSON.parse(JSON.stringify(chessPieces)));
 
-// Начальная позиция фигур, если выбраны белые
-export const resultChessPieces: IChessPieces[][] = insertChessPieces(JSON.parse(JSON.stringify(chessPieces)));
+    if (reverse) {
+        resultChessBoard = JSON.parse(JSON.stringify(resultChessBoard)).reverse();
+    }
 
-// Перевернём доску, если выбраны чёрные
-export const resultChessPiecesReverse: IChessPieces[][] = JSON.parse(JSON.stringify(resultChessPieces)).reverse();
+    return resultChessBoard;
+};
 
+export default getResultChessBoard;

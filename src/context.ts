@@ -3,7 +3,6 @@ import React from 'react';
 import { Colors } from './enums';
 import { SelectedPiece, SelectedPiecePosition } from './types';
 import { IChessPieces } from './interfaces';
-import { resultChessPieces } from './utils/getChessBoard';
 
 interface IContext {
     selectedColor: Colors;
@@ -23,9 +22,9 @@ const Context = React.createContext<IContext>({
     selectedColor: Colors.NoColor,
     sound: true,
     startGame: false,
-    chessBoard: resultChessPieces,
+    chessBoard: [],
     activeColor: Colors.NoColor,
-    movePiece: () => (resultChessPieces)
+    movePiece: () => ([])
 });
 
 export default Context;
