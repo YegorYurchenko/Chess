@@ -116,12 +116,14 @@ const App:FC = () => {
             setActiveColor(Colors.White);
         }
 
-        return movePieceToEmptySpace(
+        const newChessBoard = movePieceToEmptySpace(
             currentPiecePosition,
             moveToEmptySpacePosition,
             chessPiece,
             chessBoard
         );
+
+        return newChessBoard;
     };
 
     if (isPhone) {
