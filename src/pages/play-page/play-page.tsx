@@ -4,24 +4,21 @@ import Context from '../../context';
 import Sound from '../../components/sound';
 import ExitGame from '../../components/exit-game';
 import ChessBoard from '../../components/chess-board';
-import { Colors } from '../../enums';
 
 interface IPlayPage {
     onSetSound(sound: boolean): void,
-    onSetColor(color: Colors): void;
-    onSetStartGame(startGame: boolean): void;
+    onExitGame(): void
 }
 
-const PlayPage: FC<IPlayPage> = ({ onSetSound, onSetColor, onSetStartGame }) => {
+const PlayPage: FC<IPlayPage> = ({ onSetSound, onExitGame }) => {
     const { selectedColor, startGame } = useContext(Context);
     if (selectedColor && startGame) {
         return (
             <div className="play-page">
                 <Sound
-                    onSetSound={onSetSound}/>
+                    onSetSound={onSetSound} />
                 <ExitGame
-                    onSetColor={onSetColor}
-                    onSetStartGame={onSetStartGame}/>
+                    onExitGame={onExitGame} />
                 <ChessBoard />
             </div>
         );

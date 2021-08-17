@@ -1,13 +1,14 @@
 import { FC, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import { SelectedPiece, SelectedPiecePosition } from '../../types';
+import { movePieceToEmptySpace } from '../../utils/moveChessPiece';
+import getResultChessBoard from '../../utils/getChessBoard';
 import StartPage from '../../pages/start-page/start-page';
 import PlayPage from '../../pages/play-page/play-page';
-import { SelectedPiece, SelectedPiecePosition } from '../../types';
 import { IChessPieces } from '../../interfaces';
+import { Pawn } from '../../chessPiece';
 import { Colors } from '../../enums';
 import Context from '../../context';
-import { resultChessPieces, resultChessPiecesReverse } from '../../utils/getChessBoard';
-import { movePieceToEmptySpace } from '../../utils/moveChessPiece';
 
 // Максимальная ширина телефона
 const phoneWidth = 481;
@@ -17,7 +18,7 @@ const App:FC = () => {
     const [startGame, setStartGame] = useState<boolean>(false); // Игра активна или нет?
     const [sound, setSound] = useState<boolean>(true); // Включен звук ходов?
     const [selectedColor, setSelectedColor] = useState<Colors>(Colors.NoColor); // Выбранный цвет фигур
-    const [chessBoard, setChessBoard] = useState<IChessPieces[][]>(resultChessPieces); // Доска с фигурами
+    const [chessBoard, setChessBoard] = useState<IChessPieces[][]>([]); // Доска с фигурами
     const [activeColor, setActiveColor] = useState<Colors>(Colors.NoColor); // Цвет фигуры, которая должна сделать ход
 
     /**
@@ -26,9 +27,9 @@ const App:FC = () => {
      */
     useEffect(() => {
         if (selectedColor === Colors.White) {
-            setChessBoard(resultChessPieces);
+            setChessBoard(getResultChessBoard());
         } else {
-            setChessBoard(resultChessPiecesReverse);
+            setChessBoard(getResultChessBoard(true));
         }
     }, [selectedColor]);
 
@@ -78,6 +79,20 @@ const App:FC = () => {
      */
     const onSetSound = (sound: boolean): void => {
         setSound(sound);
+    };
+
+    /**
+     * Включить/отключить звуки ходов фигур
+     * @param {boolean} sound - включить звук?
+     * @return {void}
+     */
+    const onExitGame = (): void => {
+        setStartGame(false);
+        setSound(true);
+        setSelectedColor(Colors.NoColor);
+        setChessBoard(getResultChessBoard());
+        setActiveColor(Colors.NoColor);
+        Pawn.movedPawns = new Set();
     };
 
     /**
@@ -133,8 +148,7 @@ const App:FC = () => {
                             render={() => (
                                 <PlayPage
                                     onSetSound={onSetSound}
-                                    onSetColor={onSetColor}
-                                    onSetStartGame={onSetStartGame}/>
+                                    onExitGame={onExitGame}/>
                             )}
                             exact />
                         <Redirect to="/" />
