@@ -4,7 +4,7 @@ import insertChessPieces from './insertChessPieces';
 /**
  * Получаем шахматную доску с начальным расположением фигур
  * @param {boolean} reverse - повернуть доску? (если первые ходят чёрные фигуры)
- * @return {IChessPieces[][} resultChessBoard
+ * @return {IChessPieces[][]} resultChessBoard
  */
 const getResultChessBoard = (reverse = false): IChessPieces[][] => {
     // Массив из 8 элементов (количество горизонтальных позиций на шахматной доске)
